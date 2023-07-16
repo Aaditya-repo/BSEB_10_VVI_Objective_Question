@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">BSEB 10 VVI Objective Question</string>
+    <string name="please_wait">Please wait...</string>
+    <string name="fetching_data">Fetching data</string>
+    <string name="share">Share</string>
+    <string name="rate_us">Rate Us</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="more">More</string>
+    <string name="hello_students">Hello Students</string>
+    <string name="bseb_target">BSEB Target</string>
+    <string name="sdk">lHKPGEioGFyUMv3cRT6kdzS0yAPvEMAvC7mWaoxqOPUTzUvCDMoNgUS0nsnHEV6fMKRZDpNHfMcb6hpfWiFQFJ</string>
+    <string name="skip">skip</string>
+    <string name="update_now">"update now "</string>
+
+</resources>
