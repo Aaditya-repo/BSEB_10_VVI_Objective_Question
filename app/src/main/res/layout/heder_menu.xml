@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:text="@string/bseb_target"
         android:textSize="18dp"
-        android:textColor="@color/textColor"
+        android:textColor="?attr/menutext"
         android:fontFamily="@font/main"
         android:layout_marginTop="10dp"/>
 

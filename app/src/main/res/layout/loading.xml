@@ -7,6 +7,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/loading_background"
+        android:indeterminate="true"
+        android:indeterminateTint="?attr/textColor"
         android:padding="8dp"/>
 
 </RelativeLayout>

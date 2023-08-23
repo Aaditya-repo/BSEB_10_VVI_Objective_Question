@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="textColor">#353535</color>
     <color name="status">#41c1ba</color>
+    <color name="tra">#FF41C1BA</color>
 </resources>

@@ -16,7 +16,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:background="@color/status"
+            android:background="?attr/backgroundColor"
             android:orientation="horizontal">
 
             <ImageView
@@ -47,6 +47,7 @@
 
 
         <LinearLayout
+            android:id="@+id/internet1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -66,13 +67,35 @@
 
 
         </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/no_internet1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="320dp"
+                android:layout_height="320dp"
+                android:src="@drawable/no_internet"/>
+
+
+            <Button
+                android:id="@+id/reload1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Reload"
+                android:layout_marginTop="50dp"/>
+
+
+
+        </LinearLayout>
+
     </LinearLayout>
 
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:src="@drawable/bottom_blur"
-        android:layout_alignParentBottom="true"/>
 
 </RelativeLayout>

@@ -1,62 +1,33 @@
 {
   "project_info": {
-    "project_number": "564796176606",
-    "project_id": "bseb-10th-objective-2023",
-    "storage_bucket": "bseb-10th-objective-2023.appspot.com"
+    "project_number": "838885542040",
+    "project_id": "bseb-class-10th-fae9c",
+    "storage_bucket": "bseb-class-10th-fae9c.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:564796176606:android:ca234dc70b8be61fdaaa4f",
-        "android_client_info": {
-          "package_name": "com.bseb.biharboardmatricobjectivequestion"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "564796176606-naku9usgsk61omou96gqmuefkke37u7f.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyBrdgq44EJnu6mfJMksEKHVB66nHaUuHHw"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "564796176606-naku9usgsk61omou96gqmuefkke37u7f.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:564796176606:android:bc12ec31b8864632daaa4f",
+        "mobilesdk_app_id": "1:838885542040:android:91ce472eab094f4d2fe8ed",
         "android_client_info": {
           "package_name": "com.bseb.bseb10vviobjectivequestion"
         }
       },
       "oauth_client": [
         {
-          "client_id": "564796176606-naku9usgsk61omou96gqmuefkke37u7f.apps.googleusercontent.com",
+          "client_id": "838885542040-trhu3ht7luj9ifi8u39junkk6ohcisv8.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBrdgq44EJnu6mfJMksEKHVB66nHaUuHHw"
+          "current_key": "AIzaSyD2E4bGxzv0V2WpDx8ggEDFDMiECYlHgR8"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "564796176606-naku9usgsk61omou96gqmuefkke37u7f.apps.googleusercontent.com",
+              "client_id": "838885542040-trhu3ht7luj9ifi8u39junkk6ohcisv8.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
@@ -65,85 +36,27 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:564796176606:android:5b5e84dbf9a2916edaaa4f",
+        "mobilesdk_app_id": "1:838885542040:android:e5e13e3b9ccc4c732fe8ed",
         "android_client_info": {
           "package_name": "com.smartedu.bseb10thobjective2023"
         }
       },
       "oauth_client": [
         {
-          "client_id": "564796176606-naku9usgsk61omou96gqmuefkke37u7f.apps.googleusercontent.com",
+          "client_id": "838885542040-trhu3ht7luj9ifi8u39junkk6ohcisv8.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBrdgq44EJnu6mfJMksEKHVB66nHaUuHHw"
+          "current_key": "AIzaSyD2E4bGxzv0V2WpDx8ggEDFDMiECYlHgR8"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "564796176606-naku9usgsk61omou96gqmuefkke37u7f.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:564796176606:android:64d78cf3d52aa5b6daaa4f",
-        "android_client_info": {
-          "package_name": "com.smartedu.bsebclass10thmodelpaper2023"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "564796176606-naku9usgsk61omou96gqmuefkke37u7f.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyBrdgq44EJnu6mfJMksEKHVB66nHaUuHHw"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "564796176606-naku9usgsk61omou96gqmuefkke37u7f.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:564796176606:android:1d68059e533eccc7daaa4f",
-        "android_client_info": {
-          "package_name": "com.smarteredu.biharboardclass10thobjectivequestions"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "564796176606-naku9usgsk61omou96gqmuefkke37u7f.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyBrdgq44EJnu6mfJMksEKHVB66nHaUuHHw"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "564796176606-naku9usgsk61omou96gqmuefkke37u7f.apps.googleusercontent.com",
+              "client_id": "838885542040-trhu3ht7luj9ifi8u39junkk6ohcisv8.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

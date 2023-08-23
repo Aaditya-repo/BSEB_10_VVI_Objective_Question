@@ -1,6 +1,7 @@
 package com.bseb.bseb10vviobjectivequestion;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,8 +12,8 @@ public class MainActivity4 extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+      //  AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         setContentView(R.layout.activity_main4);
-
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -20,7 +21,6 @@ public class MainActivity4 extends AppCompatActivity {
                 startActivity(in);
                 finish();
             }
-        },3000);
-
+        },1500);
     }
 }

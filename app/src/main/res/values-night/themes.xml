@@ -10,9 +10,13 @@
         <item name="colorSecondaryVariant">@color/black</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor">@color/status</item>
+        <item name="android:statusBarColor">?attr/backgroundColor</item>
         <!-- Customize your theme here. -->
-        <item name="menutext">@color/black</item>
+        <item name="menutext">@color/white</item>
+        <item name="backgroundColor">#000000</item>
+        <item name="textColor">@color/white</item>
+        <item name="menuColor">@color/black</item>
+        <item name="wifi">@color/white</item>
     </style>
 
     <style name="TextViewStyle" parent="android:Widget.TextView">

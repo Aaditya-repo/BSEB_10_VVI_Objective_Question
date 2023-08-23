@@ -1,22 +1,16 @@
 package com.bseb.bseb10vviobjectivequestion;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
-
-import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.krishna.fileloader.FileLoader;
 import com.krishna.fileloader.listener.FileRequestListener;
 import com.krishna.fileloader.pojo.FileResponse;
@@ -44,13 +38,10 @@ public class MainActivity3 extends AppCompatActivity {
         return true;
     }
 
-    AdView mAdView;
-    AdRequest adRequest;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+      //  AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         setContentView(R.layout.activity_main3);
         pdfView = findViewById(R.id.pdf);
         textView = findViewById(R.id.setTitle2);
@@ -64,16 +55,6 @@ public class MainActivity3 extends AppCompatActivity {
                 onSupportNavigateUp();
             }
         });
-
-        MobileAds.initialize(this, new OnInitializationCompleteListener() {
-            @Override
-            public void onInitializationComplete(InitializationStatus initializationStatus) {
-            }
-        });
-
-        mAdView = findViewById(R.id.adView);
-        adRequest = new AdRequest.Builder().build();
-
 
         url = getIntent().getStringExtra("links");
         title = getIntent().getStringExtra("title");
@@ -103,8 +84,6 @@ public class MainActivity3 extends AppCompatActivity {
                                 .spacing(2)
                                 .scrollHandle(new DefaultScrollHandle(getApplicationContext()))
                                 .load();
-                        mAdView.loadAd(adRequest);
-
                     }
 
                     @Override

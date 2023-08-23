@@ -2,13 +2,17 @@ package com.bseb.bseb10vviobjectivequestion;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.browser.customtabs.CustomTabsIntent;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
@@ -26,20 +30,30 @@ import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.play.core.review.ReviewInfo;
 import com.google.android.play.core.review.ReviewManager;
 import com.google.android.play.core.review.ReviewManagerFactory;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.onesignal.OSNotification;
+import com.onesignal.OSNotificationOpenedResult;
+import com.onesignal.OneSignal;
 
+import org.json.JSONObject;
+
+import java.net.URI;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -48,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     // WebView
     String url = "";
+    String tab = "";
     WebView webView;
     SwipeRefreshLayout swipeRefreshLayout;
     Custom_load load;
@@ -65,155 +80,162 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     ReviewInfo reviewInfo;
     private Date FutureDate, future;
 
-    FirebaseRemoteConfig firebaseRemoteConfig;
-    private SharedPreferences sharedPreferences;
+
+    // Initialize Firebase Firestore
+    FirebaseFirestore db;
+
+    // Get the current app version code
+    int currentVersionCode = BuildConfig.VERSION_CODE;
+
+    private Boolean hideButton;
+
+    LinearLayout ContentView, nocontent;
+    Button button;
+
+    ImageView shareIcon;
+
+   CustomTabsIntent customTabsIntent;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         webView = findViewById(R.id.webview);
+        webView.setVerticalScrollBarEnabled(false);
         drawerLayout = findViewById(R.id.drawer);
         navigationView = findViewById(R.id.navigation);
         imageBtn = findViewById(R.id.menu_btn);
+        ContentView = findViewById(R.id.internet);
+        nocontent = findViewById(R.id.no_internet);
         load = new Custom_load(this);
         contentView = findViewById(R.id.contentV);
         load.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         swipeRefreshLayout = findViewById(R.id.swipe);
+        button = findViewById(R.id.reload);
+
+        shareIcon = findViewById(R.id.shareIcon);
+        shareIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent1 = new Intent(Intent.ACTION_SEND);
+                intent1.setType("text/plain");
+                intent1.putExtra(Intent.EXTRA_TEXT,"Download this app using this link..\n\n https://play.google.com/store/apps/details?id="+ getPackageName());
+                startActivity(intent1);
+            }
+        });
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onRefresh();
+                ContentView.setVisibility(View.VISIBLE);
+                nocontent.setVisibility(View.GONE);
+            }
+        });
         loadWebView();
         navigationDrawer();
+        FirebaseApp.initializeApp(this);
 
-        sharedPreferences = this.getSharedPreferences("MyMain", MODE_PRIVATE);
-        HashMap<String, Object> map = new HashMap<>();
-        map.put(RemoteUtil.com_bseb_bseb10vviobjectivequestion, BuildConfig.VERSION_CODE);
+        db = FirebaseFirestore.getInstance();
 
-        firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
-                .setMinimumFetchIntervalInSeconds(1)
-                .build();
-        firebaseRemoteConfig.setConfigSettingsAsync(configSettings);
-        firebaseRemoteConfig.setDefaultsAsync(map);
-        firebaseRemoteConfig.fetchAndActivate()
-                .addOnCompleteListener(new OnCompleteListener<Boolean>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Boolean> task) {
-                     DialogShow();
-                    }
-                });
+        DocumentReference versionDocRef = db.collection("Apps").document("com_bseb_bseb10vviobjectivequestion");
 
-
-
-        //RETRIVE THE DATE
-        long millis = sharedPreferences.getLong("THE_FUTURE_DATE", 0);
-        FutureDate = new Date(millis);
-
-        final Handler handler = new Handler();
-
-        Calendar calendar1 = Calendar.getInstance();
-        Date today = calendar1.getTime();
-
-        if (today.after(FutureDate)) {
-
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    StartReviewFlow();
-                }
-            }, 5000);
-
-        }
-
-        RunOnlyOnce();
-        ActivateReViewInfo();
-
-    }
-
-
-    private void ActivateReViewInfo() {
-
-        manager = ReviewManagerFactory.create(this);
-        com.google.android.play.core.tasks.Task<ReviewInfo> reviewInfoTask = manager.requestReviewFlow();
-        reviewInfoTask.addOnCompleteListener(new com.google.android.play.core.tasks.OnCompleteListener<ReviewInfo>() {
+        versionDocRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
-            public void onComplete(@NonNull com.google.android.play.core.tasks.Task<ReviewInfo> task) {
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.exists()) {
 
-
-                if (task.isSuccessful()) {
-                    reviewInfo = task.getResult();
-                } else {
-
+                    long latestVersionCode = documentSnapshot.getLong("versionCode");
+                    hideButton = documentSnapshot.getBoolean("is_force");
+                    if (latestVersionCode > currentVersionCode) {
+                        // Show the update dialog
+                        showUpdateDialog();
+                    }
                 }
-
             }
         });
 
 
+        OneSignal.setNotificationOpenedHandler(new OneSignal.OSNotificationOpenedHandler() {
+            @Override
+            public void notificationOpened(OSNotificationOpenedResult osNotificationOpenedResult) {
+                OSNotification notification = osNotificationOpenedResult.getNotification();
+                JSONObject object = notification.getAdditionalData();
+                if (object != null)
+                {
+                    String data = object.optString("url","none");
+                    Intent intent = new Intent(MainActivity.this,MainActivity2.class);
+                    intent.putExtra("links",data);
+                    startActivity(intent);
+                }
+                else {
+
+
+
+                }
+            }
+        });
+
+
+        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+        builder.setShowTitle(true);
+        builder.setInstantAppsEnabled(true);
+        builder.setToolbarColor(ContextCompat.getColor(this,R.color.tra));
+        customTabsIntent = builder.build();
+        customTabsIntent.intent.setPackage("com.android.chrome");
+
+
     }
 
+    private void showUpdateDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Update Required");
+        builder.setMessage("A new version of the app is available. Please update to the latest version.");
 
 
-    private void StartReviewFlow() {
+        if (hideButton.equals(true)){
 
-        if (reviewInfo != null) {
-
-            com.google.android.play.core.tasks.Task<Void> flow = manager.launchReviewFlow(this, reviewInfo);
-            flow.addOnCompleteListener(new com.google.android.play.core.tasks.OnCompleteListener<Void>() {
+            builder.setPositiveButton("Update", new DialogInterface.OnClickListener() {
                 @Override
-                public void onComplete(@NonNull com.google.android.play.core.tasks.Task<Void> task) {
-                    Toast.makeText(MainActivity.this, "Thanks for your Review..", Toast.LENGTH_SHORT).show();
+                public void onClick(DialogInterface dialog, int which) {
+                    // Redirect the user to the Play Store for the update
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" +getPackageName()));
+                    startActivity(intent);
                 }
             });
 
-            //ADD TWO DAYS TO THE PRESENT DAY TO BRING UP THE IN APP DIALOG IN THE FUTURE AFTER TWO DAYS
-            Calendar calendar = Calendar.getInstance();
-            calendar.add(Calendar.DATE, 2);
-            future = calendar.getTime();
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putLong("THE_FUTURE_DATE", future.getTime());
-            editor.apply();
+        }
+        else {
+
+            builder.setPositiveButton("Update", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // Redirect the user to the Play Store for the update
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" +getPackageName()));
+                    startActivity(intent);
+                }
+            });
+
+            builder.setNegativeButton("Later", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
 
         }
 
-    }
 
-    private void RunOnlyOnce() {
-
-        String FirstTime = sharedPreferences.getString("FirstTimeInstall", "");
-        assert FirstTime != null;
-        if (FirstTime.equals("")) {
-
-            Log.d("TAG", "onCreate: FUT1 : ");
-            Calendar calendar = Calendar.getInstance();
-            calendar.add(Calendar.DATE, 2);
-            future = calendar.getTime();
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putLong("THE_FUTURE_DATE", future.getTime());
-            editor.apply();
-            //Log.d(TAG, "onCreate: FUT : " + FutureDate);
-            SharedPreferences.Editor editor1 = sharedPreferences.edit();
-            editor1.putString("FirstTime Install", "Yes");
-            editor1.apply();
-        }
-
-    }
-
-
-
-
-    private void DialogShow() {
-
-        if (firebaseRemoteConfig.getLong(RemoteUtil.com_bseb_bseb10vviobjectivequestion) <= BuildConfig.VERSION_CODE) return;
-
-        CustomUpdateDialog dialog = new CustomUpdateDialog(MainActivity.this, firebaseRemoteConfig);
+        AlertDialog dialog = builder.create();
         dialog.show();
-
+        dialog.setCancelable(false);
     }
 
 
     private void loadWebView() {
 
-        webView.loadUrl("https://bsebtarget.com//BSEB/Class%2010th/Home.php");
+        webView.loadUrl("https://bsebtarget.com//BSEB/Class%2010th/new-home.php");
         webView.getSettings().setJavaScriptEnabled(true);
 
         webView.setWebViewClient(new WebViewClient(){
@@ -221,8 +243,8 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
             @Override
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-               /* contentView.setVisibility(View.GONE);
-                nocontent.setVisibility(View.VISIBLE);*/
+                ContentView.setVisibility(View.GONE);
+                nocontent.setVisibility(View.VISIBLE);
                 webView.setVisibility(View.GONE);
                 super.onReceivedError(view, request, error);
             }
@@ -254,6 +276,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
                 //    Toast.makeText(MainActivity.this, consoleMessage.message(), Toast.LENGTH_SHORT).show();
 
+                Uri uri = Uri.parse(consoleMessage.message());
 
                 if (url.equals("true"))
                 {
@@ -261,14 +284,22 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                     intent.putExtra("links",consoleMessage.message());
                     url = "false";
                     startActivity(intent);
-
-
                 }
 
                 if (consoleMessage.message().equals("url"))
                 {
                     url = "true";
                 }
+
+                if (tab.equals("true")){
+                    // custom tab
+                    customTabsIntent.launchUrl(MainActivity.this,uri);
+                    tab = "false";
+                }
+                if (consoleMessage.message().equals("tab")){
+                    tab = "true";
+                }
+
                 return super.onConsoleMessage(consoleMessage);
             }
 
@@ -327,7 +358,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         {
 
             case R.id.more:
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/dev?id=8182301560545899542"));
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/dev?id=8534749914765371345"));
                 startActivity(intent);
                 break;
 
@@ -358,9 +389,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             case R.id.exit:
                 finishAffinity();
                 break;
-
         }
-
         return true;
     }
 
@@ -369,12 +398,36 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     // It is for close navigation drawer
     @Override
     public void onBackPressed() {
-
         if (drawerLayout.isDrawerVisible(GravityCompat.START))
         {
             drawerLayout.closeDrawer(GravityCompat.START);
         }else
-            super.onBackPressed();
+            showExitConfirmationDialog();
+    }
+
+    private void showExitConfirmationDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Exit");
+        builder.setMessage("Are you sure you want to exit the app ?");
+
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Finish the current activity and exit the app
+                finish();
+            }
+        });
+
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Dismiss the dialog and continue with the app
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
 }
